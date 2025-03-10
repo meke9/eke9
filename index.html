@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EKE OYUN</title>
+    <script>
+        let currentPlayer = "X";
+        let board = [["", "", ""], ["", "", ""], ["", "", ""]];
+        let gameOver = false;
+
+        function checkWinner() {
+            const winPatterns = [
+                [ [0, 0], [0, 1], [0, 2] ],
+                [ [1, 0], [1, 1], [1, 2] ],
+                [ [2, 0], [2, 1], [2, 2] ],
+                [ [0, 0], [1, 0], [2, 0] ],
+                [ [0, 1], [1, 1], [2, 1] ],
+                [ [0, 2], [1, 2], [2, 2] ],
+                [ [0, 0], [1, 1], [2, 2] ],
+                [ [0, 2], [1, 1], [2, 0] ]
+            ];
+            
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (board[a[0]][a[1]] !== "" && board[a[0]][a[1]] === board[b[0]][b[1]] && board[a[0]][a[1]] === board[c[0]][c[1]]) {
+                    document.getElementById("status").textContent = `${board[a[0]][a[1]]} Kazandı!`;
+                    gameOver = true;
+                    return;
+                }
+            }
+            
+            if (board.flat().every(cell => cell !== "")) {
+                document.getElementById("status").textContent = "Berabere!";
+                gameOver = true;
+            }
+        }
+
+        function playMove(cell, row, col) {
+            if (!gameOver && board[row][col] === "") {
+                cell.textContent = currentPlayer;
+                board[row][col] = currentPlayer;
+                checkWinner();
+                currentPlayer = (currentPlayer === "X") ? "O" : "X";
+            }
+        }
+
+        function resetGame() {
+            board = [["", "", ""], ["", "", ""], ["", "", ""]];
+            gameOver = false;
+            currentPlayer = "X";
+            document.getElementById("status").textContent = "";
+            document.querySelectorAll("td").forEach(cell => cell.textContent = "");
+        }
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <h1>X O X Oyunu</h1>
+    <p id="status"></p>
+    <table border="1" style="margin: auto;">
+        <tr>
+            <td onclick="playMove(this, 0, 0)"></td>
+            <td onclick="playMove(this, 0, 1)"></td>
+            <td onclick="playMove(this, 0, 2)"></td>
+        </tr>
+        <tr>
+            <td onclick="playMove(this, 1, 0)"></td>
+            <td onclick="playMove(this, 1, 1)"></td>
+            <td onclick="playMove(this, 1, 2)"></td>
+        </tr>
+        <tr>
+            <td onclick="playMove(this, 2, 0)"></td>
+            <td onclick="playMove(this, 2, 1)"></td>
+            <td onclick="playMove(this, 2, 2)"></td>
+        </tr>
+    </table>
+    <br>
+    <button onclick="resetGame()">Yeniden Başlat</button>
+</body>
+</html>
